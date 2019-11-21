@@ -52,7 +52,7 @@ class FileCreateForm(ModelForm):
         fields = ('name', 'item', 'cover_picture')
 
         widgets = {
-            'username' : forms.TextInput,
+            'name' : forms.TextInput,
             'item' : forms.ClearableFileInput,
         }
         
@@ -60,10 +60,6 @@ class UserLoginForm(ModelForm):
     class Meta:
         model = User
         fields = ['username', 'password']
-        labels = {
-            'username' : _('Username'),
-            'password' : _('Password'),
-        }
 
         widgets = {
             'username' : forms.TextInput,

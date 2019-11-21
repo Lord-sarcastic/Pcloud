@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% load static %}
+        {% load custom_filters %}
+        <title>Pcloud | Sign up</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        {% include 'main/static-css.html' %}
+      </head>
+      <body>
+      <div class="site-wrap">
+    
+        <div class="site-mobile-menu">
+          <div class="site-mobile-menu-header">
+            <div class="site-mobile-menu-close mt-3">
+              <span class="icon-close2 js-menu-toggle"></span>
+            </div>
+          </div>
+          <div class="site-mobile-menu-body"></div>
+        </div>
+        
+        <!-- <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic:400,700,800" rel="stylesheet"> -->
+      {% include 'main/header.html' %}
+  
+    <div class="site-blocks-cover inner-page-cover overlay" style="background-image: url({% static 'images/hero_2.jpg' %});" data-aos="fade" data-stellar-background-ratio="0.5">
+      <div class="container">
+        <div class="row align-items-center justify-content-center text-center">
+
+          <div class="col-md-10" data-aos="fade-up" data-aos-delay="400">
+            
+            
+            <div class="row justify-content-center mt-5">
+              <div class="col-md-8 text-center">
+                <h1>{{ the_folder.name }} folder</h1>
+                <p class="mb-0">Created {{ the_folder.created_at | timesince }} ago.</p>
+                <p class="mb-0">Path: {{ the_folder.path }}</p>
+              </div>
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+    </div>  
+
+    <div class="site-section">
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+              <div class="mb-4" style="margin-top: -150px;">
+                  <div class="slide-one-item home-slider owl-carousel">
+                    <div><img src="{{ the_folder.cover_picture.url }}" alt="Image" class="img-fluid rounded"></div>
+                  </div>
+                </div>
+                
+                <h4 class="h5 mb-4 text-black">Contains {{ the_folder.folder_set.all.count }} folder(s), {{ the_folder.file_set.all.count }} file(s)</h4>
+                <a href="{% url 'main:create_folder' drive_id=the_folder.drive.id parent_id=the_folder.id %}" class="btn">Create Folder</a>
+                <a href="{% url 'main:create_file' parent_id=the_folder.id drive_id=0 %}" class="btn">Create file</a>
+            <div class="row">
+              {% for folder in the_folder.folder_set.all %}
+              <div class="col-lg-6" id="{{ folder.id }}">
+                
+                <div class="d-block d-md-flex listing vertical">
+                    <a href="{% url 'main:folder_view' pk=folder.id %}" class="img d-block" style="background-image: url({{ folder.cover_picture.url }})"></a>
+                    <div class="lh-content">
+                      <span class="category">path: {{ folder.path }}</span>
+                      <a data-toggle="modal" data-target="#delete" data-id="{{ folder.id }}" data-code="2" class="bookmark"><span><img src="{% static 'images/rubbish-bin.png' %}" class="d-inline-block" /></span></a>
+                      <a href="{% url 'main:edit_folder' folder_id=folder.id %}" data-toggle="modal" data-target="#create" data-id="{{ folder.id }}"><span><img src="{% static 'images/edit.png' %}" class="d-inline-block" /></span></a>
+                      <h3><a href="{% url 'main:folder_view' pk=folder.id %}">{{ folder.name }}</a></h3>
+                      <address>Created {{ folder.created_at | timesince }} ago</address>
+                    </div>
+                </div>
+
+              </div>
+              {% endfor %}
+              <div class="modal fade right" id="delete" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+
+                <!-- Add class .modal-full-height and then add class .modal-right (or other classes from list above) to set a position to the modal -->
+                <div class="modal-dialog modal-full-height modal-right modal-sm" role="document">
+
+
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h4 class="modal-title w-100" id="deleteModalLabel">Do you want to delete this folder?</h4>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" name="delete_drive">
+                          {% csrf_token %}
+                          <input type="hidden" name="drive_id" value="">
+                          <input type="hidden" name="code" value="">
+                          <div class="row form-group">
+                            <div class="col-md-12">
+                              <input type="submit" value="Delete" class="btn btn-primary py-2 px-4 text-white">
+                            </div>
+                          </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                      <a href="#" class="like" data-dismiss="modal">Close</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% for file in the_folder.file_set.all %}
+              <div class="col-lg-6" id="{{ file.id }}">
+                
+                <div class="d-block d-md-flex listing vertical">
+                    <a href="{{ file.item.url }}" class="img d-block" style="background-image: url({{ file.cover_picture.url }})"></a>
+                    <div class="lh-content">
+                      <span class="category">{{ file.name|filename:"/" }}</span>
+                      <a data-toggle="modal" data-target="#delete" data-id="{{ file.id }}" data-id="{{ file.id }}" data-code="3" class="bookmark"><span><img src="{% static 'images/rubbish-bin.png' %}" class="d-inline-block" /></span></a>
+<!--                      <a data-toggle="modal" data-target="#create" data-id="{{ file.id }}"><span><img src="{% static 'images/edit.png' %}" class="d-inline-block" /></span></a>-->
+                      <h3><a href="{{ file.item.url }}">{{ file.name }}</a></h3>
+                      <address>Created {{ file.created_at | timesince }} ago</address>
+                    </div>
+                </div>
+
+              </div>
+              {% endfor %}
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="site-section bg-light">
+      <div class="container">
+        <div class="row mb-5">
+          <div class="col-md-7 text-left border-primary">
+            <h2 class="font-weight-light text-primary">Your Drives</h2>
+          </div>
+        </div>
+        <div class="row mt-5">
+            {% for drive in the_folder.owner.drive_set.all %}
+
+          <div class="col-lg-6">
+            <div class="d-block d-md-flex listing">
+              <a href="{% url 'main:drive_view' pk=drive.id %}" class="img d-block" style="background-image: url({{ drive.cover_picture.url }})"></a>
+              <div class="lh-content">
+                <span class="category">{{ drive.name }}</span>
+                <a data-toggle="modal" data-target="#delete" data-id="{{ drive.id }}" class="bookmark"><span class="icon-heart"></span></a>
+                <a data-toggle="modal" data-target="#create" data-id="{{ drive.id }}"><span class="icon-star text-warning"></span></a>
+                <h3><a href="{% url 'main:drive_view' pk=drive.id %}">{{ drive.name }}</a></h3>
+                <address>Created {{ drive.created_at | timesince }} ago</address>
+              </div>
+            </div>
+          </div>
+          {% empty %}
+          <p>You haven't created any drives yet</p>
+          {% endfor %}
+          </div>
+      </div>
+    </div>
+    {% include 'main/footer.html' %}
+    </div>
+    {% include 'main/static-js.html' %}
+  </body>
+</html>

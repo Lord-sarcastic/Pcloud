@@ -23,3 +23,7 @@ def qslice(queryset, bounds):
 @register.filter
 def addclass(value, arg):
     return value.as_widget(attrs={'class': arg})
+
+@register.filter
+def filename(value, arg):
+    return value.split(arg)[-1]
