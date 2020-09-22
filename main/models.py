@@ -85,20 +85,6 @@ class Folder(models.Model):
     def get_absolute_url(self):
         kwargs = {'slug' : self.slug}
         return reverse('', kwargs=kwargs)
-
-    # def get_path(self):
-    #     yield self.name
-    #     try:
-    #         yield from self.parent.get_path()
-    #     except:
-    #         pass
-
-    # def complete_get_path(self):
-    #     text = []
-    #     for i in self.get_path():
-    #         text.append(i)
-    #     text.reverse()
-    #     return "/".join(text)
     
     def get_path(self):
         try:
